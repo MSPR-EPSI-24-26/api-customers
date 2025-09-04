@@ -1,0 +1,36 @@
+name: Build and push docker image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to ghcr
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build docker image
+        run: |
+          IMAGE_TAG=ghcr.io/$GITHUB_REPOSITORY:${GITHUB_SHA}
+          docker build -t $IMAGE_TAG .
+          docker tag $IMAGE_TAG ghcr.io/$GITHUB_REPOSITORY:latest
+
+      - name: Push docker image
+        run: |
+          docker push ghcr.io/$GITHUB_REPOSITORY:${GITHUB_SHA}
+          docker push ghcr.io/$GITHUB_REPOSITORY:latest
