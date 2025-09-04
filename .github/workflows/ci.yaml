@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-env:
-  REPO_LOWER: $(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -29,11 +26,11 @@ jobs:
 
       - name: Build docker image
         run: |
-          IMAGE_TAG=ghcr.io/$REPO_LOWER:${{ github.sha }}
+          IMAGE_TAG=ghcr.io/mspr-epsi-24-26:${{ github.sha }}
           docker build -t $IMAGE_TAG .
-          docker tag $IMAGE_TAG ghcr.io/$REPO_LOWER:latest
+          docker tag $IMAGE_TAG ghcr.io/mspr-epsi-24-26:latest
 
       - name: Push docker image
         run: |
-          docker push ghcr.io/$REPO_LOWER:${{ github.sha }}
-          docker push ghcr.io/$REPO_LOWER:latest
+          docker push ghcr.io/mspr-epsi-24-26:${{ github.sha }}
+          docker push ghcr.io/mspr-epsi-24-26:latest
