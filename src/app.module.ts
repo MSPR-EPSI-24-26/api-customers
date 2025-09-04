@@ -11,14 +11,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'db',
-      port: 5432,
-      username: 'user',
-      password: 'password',
-      database: 'clients_db',
+      port: process.env.DB_PORT as unknown as number || 5432,
+      username: process.env.DB_USER || 'user',
+      password: process.env.DB_PASSWORD || 'password',
+      database: process.env.DB_DATABASE || 'api_customers',
       entities: [Customer],
       synchronize: true,
     }),
     CustomerModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

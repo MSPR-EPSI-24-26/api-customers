@@ -1,39 +1,31 @@
-version: '3.8'
-
 services:
-  app:
-    build: .
-    ports:
-      - "3001:3000"  # Port unique pour API Clients
-    depends_on:
-      - db
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/clients_db
-      - NODE_ENV=development
-      - PORT=3000
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: unless-stopped
-
   db:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
+    restart: always
     environment:
-      POSTGRES_DB: clients_db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
-    volumes:
-      - postgres_clients_data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d/
+      POSTGRES_DB: api_customers
     ports:
-      - "5433:5432"  # Port externe unique pour cette DB
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d clients_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "5433:5433"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+
+  app:
+    build: .
+    container_name: api-customers
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5433
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: api_customers
+    depends_on:
+      - db
 
 volumes:
-  postgres_clients_data:
+  db_data:
