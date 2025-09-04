@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-
-env:
-  REPO_LOWER: ${{ github.repository.toLowerCase() }}
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -30,11 +26,11 @@ jobs:
 
       - name: Build docker image
         run: |
-          IMAGE_TAG=ghcr.io/$REPO_LOWER:${GITHUB_SHA}
+          IMAGE_TAG=ghcr.io/$GITHUB_REPOSITORY:${{ github.sha }}
           docker build -t $IMAGE_TAG .
-          docker tag $IMAGE_TAG ghcr.io/$REPO_LOWER:latest
+          docker tag $IMAGE_TAG ghcr.io/$GITHUB_REPOSITORY:latest
 
       - name: Push docker image
         run: |
-          docker push ghcr.io/$REPO_LOWER:${GITHUB_SHA}
-          docker push ghcr.io/$REPO_LOWER:latest
+          docker push ghcr.io/$GITHUB_REPOSITORY:${{ github.sha }}
+          docker push ghcr.io/$GITHUB_REPOSITORY:latest
