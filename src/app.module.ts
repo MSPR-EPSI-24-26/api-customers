@@ -16,7 +16,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_DATABASE || 'api_customers',
       entities: [Customer],
-      synchronize: true,
     }),
     CustomerModule,
   ],
