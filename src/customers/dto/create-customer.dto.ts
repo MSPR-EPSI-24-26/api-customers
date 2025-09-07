@@ -1,5 +1,12 @@
 // create-client.dto.ts
-import { IsString, IsEmail, IsOptional, IsEnum, MaxLength, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsOptional,
+  IsEnum,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()

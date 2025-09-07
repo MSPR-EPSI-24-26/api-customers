@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('customers')
 export class Customer {
@@ -32,7 +38,7 @@ export class Customer {
   @Column({
     type: 'enum',
     enum: ['individual', 'professional'],
-    default: 'individual'
+    default: 'individual',
   })
   type: string;
 
