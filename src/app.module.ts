@@ -5,16 +5,15 @@ import { Customer } from './customers/entities/customer.entity';
 import { CustomerModule } from './customers/customer.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// src/app.module.ts
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'db-service',
-      port: (process.env.DB_PORT as unknown as number) || 5432,
-      username: process.env.DB_USER || 'user',
-      password: process.env.DB_PASSWORD || 'password',
-      database: process.env.DB_DATABASE || 'api_customers',
+      host: process.env.DB_HOST,
+      port: (process.env.DB_PORT as unknown as number),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [Customer],
     }),
     CustomerModule,

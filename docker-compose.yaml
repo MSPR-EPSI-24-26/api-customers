@@ -3,11 +3,11 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: api_customers
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5433:5433"
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -18,12 +18,8 @@ services:
     restart: always
     ports:
       - "3000:3000"
-    environment:
-      DATABASE_HOST: db
-      DATABASE_PORT: 5433
-      DATABASE_USER: user
-      DATABASE_PASSWORD: password
-      DATABASE_NAME: api_customers
+    env_file:
+      - .env
     depends_on:
       - db
 
