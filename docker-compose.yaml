@@ -10,7 +10,8 @@ services:
       - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-
+    networks:
+      - customers-network
 
   app:
     build: .
@@ -22,6 +23,15 @@ services:
       - .env
     depends_on:
       - db
+    networks:
+      - customers-network
+      - microservices_network
 
 volumes:
   db_data:
+
+networks:
+  customers-network:
+    driver: bridge
+  microservices_network:
+    external: true
