@@ -27,9 +27,9 @@ jobs:
 
       - name: Build docker image
         run: |
-          IMAGE_TAG=ghcr.io/mspr-epsi-24-26/api-customers:${{ github.sha }}
+          IMAGE_TAG=ghcr.io/mspr-epsi-24-26/api-customers:latest
           docker build -t $IMAGE_TAG .
 
       - name: Push docker image
         run: |
-          docker push ghcr.io/mspr-epsi-24-26/api-customers:${{ github.sha }}
+          docker push ghcr.io/mspr-epsi-24-26/api-customers:latest
