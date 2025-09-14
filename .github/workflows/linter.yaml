@@ -3,7 +3,7 @@ name: Linter
 on:
   push:
     branches:
-      - main
+      - "fix/deployment-k3s"
 
 jobs:
   linter:
