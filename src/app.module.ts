@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { Customer } from './customers/entities/customer.entity';
 import { CustomerModule } from './customers/customer.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MetricsModule } from './customers/metrics/metrics.module';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [

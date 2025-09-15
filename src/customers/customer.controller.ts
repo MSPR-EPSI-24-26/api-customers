@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post, Patch, Put, Delete } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { MetricsService } from './metrics/metrics.service';
+import { MetricsService } from '../metrics/metrics.service';
 
 @Controller("customers")
 export class CustomerController {
