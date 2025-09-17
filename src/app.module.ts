@@ -7,6 +7,7 @@ import { CustomerModule } from './customers/customer.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MetricsModule } from './metrics/metrics.module';
+import { MetricsInterceptor } from './metrics/metrics.interceptor';
 
 @Module({
   imports: [
@@ -30,6 +31,12 @@ import { MetricsModule } from './metrics/metrics.module';
     MetricsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MetricsInterceptor,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule { }

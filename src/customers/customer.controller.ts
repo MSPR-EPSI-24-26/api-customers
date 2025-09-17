@@ -25,8 +25,7 @@ import { Role } from './entities/customer.entity';
 export class CustomerController {
   constructor(
     private readonly customerService: CustomerService,
-    private readonly metricsService: MetricsService,
-  ) {}
+  ) { }
 
   @Get()
   @Roles(Role.ADMIN)
