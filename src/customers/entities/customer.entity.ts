@@ -6,6 +6,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum Role {
+  CUSTOMER = 'customer',
+  ADMIN = 'admin',
+}
+
 @Entity('customers')
 export class Customer {
   @PrimaryGeneratedColumn()
@@ -20,8 +25,18 @@ export class Customer {
   @Column({ unique: true, length: 255 })
   email: string;
 
+  @Column({ length: 255 })
+  password: string;
+
   @Column({ length: 20, nullable: true })
   phone: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.CUSTOMER,
+  })
+  role: Role;
 
   @Column({ length: 255 })
   address: string;

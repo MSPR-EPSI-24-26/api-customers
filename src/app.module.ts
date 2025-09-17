@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Customer } from './customers/entities/customer.entity';
 import { CustomerModule } from './customers/customer.module';
+import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'db-service-customers',
@@ -18,7 +23,9 @@ import { MetricsModule } from './metrics/metrics.module';
       entities: [Customer],
       autoLoadEntities: true,
       logging: true, // Pour débugger les requêtes SQL
+      synchronize: true, // Only for development
     }),
+    AuthModule,
     CustomerModule,
     MetricsModule,
   ],

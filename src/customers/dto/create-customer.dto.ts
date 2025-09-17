@@ -1,12 +1,13 @@
-// create-client.dto.ts
 import {
   IsString,
   IsEmail,
   IsOptional,
   IsEnum,
+  IsBoolean,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { Role } from '../entities/customer.entity';
 
 export class CreateCustomerDto {
   @IsString()
@@ -23,8 +24,18 @@ export class CreateCustomerDto {
 
   @IsOptional()
   @IsString()
+  @MinLength(6)
+  @MaxLength(255)
+  password?: string;
+
+  @IsOptional()
+  @IsString()
   @MaxLength(20)
   phone?: string;
+
+  @IsOptional()
+  @IsEnum(Role)
+  role?: Role;
 
   @IsString()
   @MaxLength(255)
@@ -46,4 +57,8 @@ export class CreateCustomerDto {
   @IsOptional()
   @IsEnum(['individual', 'professional'])
   type?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
