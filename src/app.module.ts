@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { Customer } from './customers/entities/customer.entity';
 import { CustomerModule } from './customers/customer.module';
 import { AuthModule } from './auth/auth.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MetricsModule } from './metrics/metrics.module';
 import { MetricsInterceptor } from './metrics/metrics.interceptor';
