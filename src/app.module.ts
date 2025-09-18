@@ -40,4 +40,4 @@ import { MetricsInterceptor } from './metrics/metrics.interceptor';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

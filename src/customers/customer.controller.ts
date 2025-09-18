@@ -10,7 +10,6 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { MetricsService } from '../metrics/metrics.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -23,9 +22,7 @@ import { User } from '../auth/interfaces/user.interface';
 @Controller('customers')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CustomerController {
-  constructor(
-    private readonly customerService: CustomerService,
-  ) { }
+  constructor(private readonly customerService: CustomerService) {}
 
   @Get()
   @Roles(Role.ADMIN)
