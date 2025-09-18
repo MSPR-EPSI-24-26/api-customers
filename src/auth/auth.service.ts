@@ -15,14 +15,18 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<{ access_token: string; customer: Omit<Customer, 'password'> }> {
+  async register(
+    registerDto: RegisterDto,
+  ): Promise<{ access_token: string; customer: Omit<Customer, 'password'> }> {
     // Check if customer already exists
     const existingCustomer = await this.customerRepository.findOne({
       where: { email: registerDto.email },
     });
 
     if (existingCustomer) {
-      throw new UnauthorizedException('Customer with this email already exists');
+      throw new UnauthorizedException(
+        'Customer with this email already exists',
+      );
     }
 
     // Hash password
@@ -38,10 +42,15 @@ export class AuthService {
     const savedCustomer = await this.customerRepository.save(customer);
 
     // Generate JWT token
-    const payload = { sub: savedCustomer.id, email: savedCustomer.email, role: savedCustomer.role };
+    const payload = {
+      sub: savedCustomer.id,
+      email: savedCustomer.email,
+      role: savedCustomer.role,
+    };
     const access_token = this.jwtService.sign(payload);
 
     // Remove password from response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...customerWithoutPassword } = savedCustomer;
 
     return {
@@ -50,7 +59,9 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<{ access_token: string; customer: Omit<Customer, 'password'> }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ access_token: string; customer: Omit<Customer, 'password'> }> {
     // Find customer by email
     const customer = await this.customerRepository.findOne({
       where: { email: loginDto.email },
@@ -61,7 +72,10 @@ export class AuthService {
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(loginDto.password, customer.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      customer.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -72,10 +86,15 @@ export class AuthService {
     }
 
     // Generate JWT token
-    const payload = { sub: customer.id, email: customer.email, role: customer.role };
+    const payload = {
+      sub: customer.id,
+      email: customer.email,
+      role: customer.role,
+    };
     const access_token = this.jwtService.sign(payload);
 
     // Remove password from response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...customerWithoutPassword } = customer;
 
     return {
@@ -90,9 +109,12 @@ export class AuthService {
     });
   }
 
-  async validatePermission(customerId: number, requiredRole?: Role): Promise<boolean> {
+  async validatePermission(
+    customerId: number,
+    requiredRole?: Role,
+  ): Promise<boolean> {
     const customer = await this.validateCustomer(customerId);
-    
+
     if (!customer) {
       return false;
     }
@@ -114,7 +136,7 @@ export class AuthService {
   verifyToken(token: string): any {
     try {
       return this.jwtService.verify(token);
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid token');
     }
   }

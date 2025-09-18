@@ -8,4 +8,4 @@ import { MetricsInterceptor } from './metrics.interceptor';
   providers: [MetricsService, MetricsInterceptor],
   exports: [MetricsService, MetricsInterceptor],
 })
-export class MetricsModule { }
+export class MetricsModule {}
