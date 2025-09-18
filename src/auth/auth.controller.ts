@@ -1,10 +1,28 @@
-import { Controller, Post, Body, UseGuards, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GetUser } from './decorators/get-user.decorator';
+import { User } from './interfaces/user.interface';
+import { Role } from '../customers/entities/customer.entity';
+
+interface DecodedToken {
+  sub: string;
+  email: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -24,14 +42,14 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@GetUser() user: any) {
+  getProfile(@GetUser() user: User) {
     return { user };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('validate')
   @HttpCode(HttpStatus.OK)
-  async validateToken(@GetUser() user: any) {
+  validateToken(@GetUser() user: User) {
     return {
       valid: true,
       user: {
@@ -44,24 +62,28 @@ export class AuthController {
 
   @Post('validate-permission')
   @HttpCode(HttpStatus.OK)
-  async validatePermission(@Body() body: { token: string; requiredRole?: string }) {
+  async validatePermission(
+    @Body() body: { token: string; requiredRole?: string },
+  ) {
     try {
       // Verify the token without using guards
-      const decoded = this.authService.verifyToken(body.token);
+      const decoded = this.authService.verifyToken(body.token) as DecodedToken;
       const isValid = await this.authService.validatePermission(
-        decoded.sub, 
-        body.requiredRole as any
+        Number(decoded.sub),
+        body.requiredRole as Role,
       );
-      
+
       return {
         valid: isValid,
-        user: isValid ? {
-          id: decoded.sub,
-          email: decoded.email,
-          role: decoded.role,
-        } : null,
+        user: isValid
+          ? {
+              id: decoded.sub,
+              email: decoded.email,
+              role: decoded.role,
+            }
+          : null,
       };
-    } catch (error) {
+    } catch {
       return {
         valid: false,
         user: null,

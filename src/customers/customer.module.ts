@@ -9,6 +9,6 @@ import { MetricsModule } from 'src/metrics/metrics.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Customer]), MetricsModule],
   controllers: [CustomerController],
-  providers:  [CustomerService],
+  providers: [CustomerService],
 })
 export class CustomerModule {}
