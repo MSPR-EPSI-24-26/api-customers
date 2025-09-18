@@ -23,9 +23,10 @@ import { MetricsInterceptor } from './metrics/metrics.interceptor';
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_NAME || 'api_customers',
       entities: [Customer],
-      autoLoadEntities: true,
       logging: true, // Pour débugger les requêtes SQL
-      synchronize: true, // Only for development
+      synchronize: false, // Only for development
+      migrationsRun: true,
+      migrations: ['dist/migrations/*.js'],
     }),
     AuthModule,
     CustomerModule,
