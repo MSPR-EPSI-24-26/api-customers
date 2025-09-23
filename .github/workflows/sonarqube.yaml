@@ -35,14 +35,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run CI
-        run: npm ci
-
       - name: Create test results directory
         run: mkdir -p test-results
 
       - name: Run tests with coverage
         run: npm run test:cov
+
+      - name: Run e2e tests
+        run: npm run test:e2e
 
       - name: Check coverage and test results
         run: |
