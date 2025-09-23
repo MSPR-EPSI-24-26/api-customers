@@ -1,17 +1,15 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Param, 
-  Patch, 
-  Put,
-  Delete, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { MetricsService } from '../metrics/metrics.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -19,13 +17,12 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { Role } from './entities/customer.entity';
+import { User } from '../auth/interfaces/user.interface';
 
-@Controller("customers")
+@Controller('customers')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CustomerController {
-  constructor(
-    private readonly customerService: CustomerService,
-  ) { }
+  constructor(private readonly customerService: CustomerService) {}
 
   @Get()
   @Roles(Role.ADMIN)
@@ -34,8 +31,8 @@ export class CustomerController {
   }
 
   @Get('me')
-  getProfile(@GetUser() user: any) {
-    return this.customerService.findOne(user.id);
+  getProfile(@GetUser() user: User) {
+    return this.customerService.findOne(Number(user.id));
   }
 
   @Get(':id')
@@ -51,13 +48,19 @@ export class CustomerController {
   }
 
   @Patch('me')
-  updateProfile(@GetUser() user: any, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customerService.update(user.id, updateCustomerDto);
+  updateProfile(
+    @GetUser() user: User,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {
+    return this.customerService.update(Number(user.id), updateCustomerDto);
   }
 
   @Patch(':id')
   @Roles(Role.ADMIN)
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateCustomerDto: UpdateCustomerDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {
     return this.customerService.update(id, updateCustomerDto);
   }
 

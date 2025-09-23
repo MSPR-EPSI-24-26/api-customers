@@ -15,14 +15,44 @@ export class CustomerService {
 
   async findAll(): Promise<Customer[]> {
     return this.customerRepository.find({
-      select: ['id', 'firstName', 'lastName', 'email', 'phone', 'role', 'address', 'city', 'postalCode', 'country', 'type', 'isActive', 'createdAt', 'updatedAt'],
+      select: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'role',
+        'address',
+        'city',
+        'postalCode',
+        'country',
+        'type',
+        'isActive',
+        'createdAt',
+        'updatedAt',
+      ],
     });
   }
 
   async findOne(id: number): Promise<Customer> {
     const customer = await this.customerRepository.findOne({
       where: { id },
-      select: ['id', 'firstName', 'lastName', 'email', 'phone', 'role', 'address', 'city', 'postalCode', 'country', 'type', 'isActive', 'createdAt', 'updatedAt'],
+      select: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'role',
+        'address',
+        'city',
+        'postalCode',
+        'country',
+        'type',
+        'isActive',
+        'createdAt',
+        'updatedAt',
+      ],
     });
 
     if (!customer) {
@@ -47,20 +77,28 @@ export class CustomerService {
     const savedCustomer = await this.customerRepository.save(customer);
 
     // Remove password from response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...customerWithoutPassword } = savedCustomer;
     return customerWithoutPassword as Customer;
   }
 
-  async update(id: number, updateCustomerDto: UpdateCustomerDto): Promise<Customer> {
-    const customer = await this.findOne(id);
+  async update(
+    id: number,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
+    // Verify customer exists
+    await this.findOne(id);
 
     // Hash password if provided
     if (updateCustomerDto.password) {
-      updateCustomerDto.password = await bcrypt.hash(updateCustomerDto.password, 10);
+      updateCustomerDto.password = await bcrypt.hash(
+        updateCustomerDto.password,
+        10,
+      );
     }
 
     await this.customerRepository.update(id, updateCustomerDto);
-    
+
     return this.findOne(id);
   }
 

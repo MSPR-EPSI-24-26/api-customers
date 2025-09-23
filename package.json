@@ -95,6 +95,7 @@
       "!**/*.interface.ts",
       "!**/*.d.ts"
     ],
+    "collectCoverage": true,
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "coverageReporters": [
