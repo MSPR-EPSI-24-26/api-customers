@@ -38,18 +38,29 @@ jobs:
       - name: Run CI
         run: npm ci
 
+      - name: Create test results directory
+        run: mkdir -p test-results
+
       - name: Run tests with coverage
         run: npm run test:cov
 
+      - name: Check coverage and test results
+        run: |
+          echo "Checking generated files:"
+          ls -la coverage/ || echo "No coverage directory found"
+          ls -la test-results/ || echo "No test-results directory found"
+          [ -f coverage/lcov.info ] && echo "✓ Coverage file found" || echo "✗ Coverage file missing"
+          [ -f test-results/jest-sonar.xml ] && echo "✓ Jest Sonar report found" || echo "✗ Jest Sonar report missing"
+
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: sonarsource/sonarqube-scan-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: SonarQube Quality Gate Check
-        uses: sonarsource/sonarqube-quality-gate-action@master
+        uses: sonarsource/sonarqube-quality-gate-action@v1.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         timeout-minutes: 5
