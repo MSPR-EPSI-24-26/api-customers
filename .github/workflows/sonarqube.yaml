@@ -1,23 +1,66 @@
-# name: Sonarqube
+name: SonarQube Analysis
 
-# on:
-#   workflow_run:
-#     workflows: ["Test"]
-#     types:
-#       - completed
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
 
-# jobs:
-#   sonarqube:
-#     runs-on: ubuntu-latest
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    
+    # Ne s'exécute que si le workflow Test s'est terminé avec succès
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' || github.event_name == 'pull_request'
 
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Nécessaire pour SonarQube pour analyser l'historique
 
-#     - name: Run SonarQube Scanner
-#       uses: SonarSource/sonarqube-scan-action@v5.2.0
-#       env:
-#         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#         SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-#         SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
-#         SONAR_SCANNER_OPTS: "-Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create test results directory
+        run: mkdir -p test-results
+
+      - name: Run tests with coverage
+        run: npm run test:cov
+
+      - name: Run e2e tests
+        run: npm run test:e2e
+
+      - name: Check coverage and test results
+        run: |
+          echo "Checking generated files:"
+          ls -la coverage/ || echo "No coverage directory found"
+          ls -la test-results/ || echo "No test-results directory found"
+          [ -f coverage/lcov.info ] && echo "✓ Coverage file found" || echo "✗ Coverage file missing"
+          [ -f test-results/jest-sonar.xml ] && echo "✓ Jest Sonar report found" || echo "✗ Jest Sonar report missing"
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: SonarQube Quality Gate Check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        timeout-minutes: 5

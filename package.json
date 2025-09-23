@@ -86,17 +86,31 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.spec.ts",
+      "!**/*.e2e-spec.ts",
+      "!**/main.ts",
+      "!**/node_modules/**",
+      "!**/dist/**",
+      "!**/*.interface.ts",
+      "!**/*.d.ts"
     ],
     "collectCoverage": true,
     "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
     "coverageReporters": [
-      "lcov"
+      "text",
+      "lcov",
+      "html",
+      "text-summary"
     ],
-    "reporters": [
-      "default",
-      ["jest-junit", { "outputDirectory": "tests", "outputName": "junit.xml" }]
-    ],
-    "testEnvironment": "node"
+    "coverageThreshold": {
+      "global": {
+        "branches": 95,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    }
   }
 }
